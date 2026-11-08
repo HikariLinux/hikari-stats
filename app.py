@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import json
+import os
 
 try:
     import psycopg
@@ -8,7 +9,7 @@ except ImportError:
 
 g_conn = None
 
-DBINFO = "dbname=asahistats user=asahistats"
+DBINFO = os.environ.get("HIKARI_STATS_DB", "dbname=hikaristats user=hikaristats")
 
 def application(environ, start_response):
     global g_conn

@@ -1,11 +1,12 @@
 #!/bin/sh
 
 cd "$(dirname "$0")"
+DBINFO="${HIKARI_STATS_DB:-dbname=hikaristats user=hikaristats}"
 
 (
 
 TOTAL=$(
-cat <<EOF | psql -qAt asahistats
+cat <<EOF | psql -qAt "$DBINFO"
 select count(*) as count from stats where not(hide);
 EOF
 )
@@ -18,10 +19,11 @@ cat <<EOF
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Asahi Linux install statistics.</title>
+    <title>Hikari Linux install statistics</title>
   </head>
   <body>
     <div class="container">
+      <h1>Hikari Linux install statistics</h1>
       <h2>Breakdown by device:</h2>
       <div class="table-responsive">
         <table class="table table-striped">
@@ -35,7 +37,7 @@ cat <<EOF
           <tbody>
 EOF
 
-cat <<EOF | psql -qAt asahistats
+cat <<EOF | psql -qAt "$DBINFO"
 select
     '<tr><td>' || count::text || '</td><td>' || device_class || '</td><td>' || description || '</td></tr>'
 from (
